@@ -30,3 +30,25 @@ def send_to_backend(uid):
     except requests.exceptions.RequestException as e:
         print("Connection Failed:", e)
 
+# Main loop to read RFID input
+for event in device.read_loop():
+    if event.type == ecodes.EV_KEY:
+        key = categorize(event)
+
+        if key.keystate == 1:  # Key Down
+            if key.keycode == 'KEY_ENTER':
+                if rfid:
+                    print("Card Detected:", rfid)
+                    send_to_backend(rfid)
+                    rfid = ""
+
+            else:
+                if isinstance(key.keycode, list):
+                    k = key.keycode[0]
+                else:
+                    k = key.keycode
+
+                if k.startswith("KEY_"):
+                    digit = k.replace("KEY_", "")
+                    if digit.isdigit():
+                        rfid += digit
