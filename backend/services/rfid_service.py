@@ -24,6 +24,13 @@ def send_to_backend(uid):
             data = response.json()
             message = data.get("message", "Unknown Response")
             print(message)
+
+        elif response.status_code == 404:
+            print("Not Registered")
+
+        elif response.status_code == 403:
+            print("Access Denied")
+            
         else:
             print("Server Error:", response.status_code)
 
