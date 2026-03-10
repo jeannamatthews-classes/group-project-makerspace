@@ -20,17 +20,23 @@ def send_to_backend(uid):
     try:
         response = requests.post(API_URL, json={"uid": uid}, timeout=5)
 
+        # Response handling based on status code
+
+        # 200: Success - Card is registered and access is granted
         if response.status_code == 200:
             data = response.json()
             message = data.get("message", "Unknown Response")
             print(message)
 
+        # 404: Not Registered - Card is not registered in the system
         elif response.status_code == 404:
             print("Not Registered")
 
+        # 403: Access Denied - Card is registered but access is denied (e.g., expired, blacklisted)
         elif response.status_code == 403:
             print("Access Denied")
-            
+
+        # 500: Server Error - Something went wrong on the server side    
         else:
             print("Server Error:", response.status_code)
 
