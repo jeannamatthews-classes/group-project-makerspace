@@ -4,32 +4,62 @@ from app.models import Student, AccessEvent
 from app.utils import hash_uid
 
 
-def process_access_event(card_uid: str, device_id: str = None, timestamp: str = None) -> dict:
+def validate_uid(card_uid: str):
+    """
+    Basic validation to make sure the UID exists and is not blank.
+    """
+    return card_uid is not None and card_uid.strip() != ""
+
+
+def check_optional_policies(student):
+    """
+    Placeholder for future policy checks.
+
+    Right now, any registered student passes.
+    Later this could check things like "training status".
+    """
+    return True, "OK"
+
+
+def process_access_event(card_uid: str, device_id: str = None, timestamp: str = None):
     """
     Process an RFID tap attempt for POST /api/access-events.
     """
-    card_uid_hash = hash_uid(card_uid)
-    student = Student.query.filter_by(card_uid_hash=card_uid_hash).first() # returns the first match 
 
-    if student != None:
-        decision = "GRANT"
-        reason = "OK"
-        student_id = student.student_id
-    else:
+    if not validate_uid(card_uid): # ensure UID exist before doing anything else
         decision = "DENY"
-        reason = "NOT_REGISTERED"
+        reason = "INVALID_UID"
         student_id = None
-
-    if timestamp != None:
-        try:
-            event_timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00")) # convert timestamp to python datetime obj.
-        except ValueError: # date is badly formatted
-            event_timestamp = datetime.utcnow() # use current time
     else:
-        event_timestamp = datetime.utcnow() # if no timestamp exist, use current time
+        card_uid_hash = hash_uid(card_uid) 
+        student = Student.query.filter_by(card_uid_hash=card_uid_hash).first() # look for a matching registered student
 
-    access_event = AccessEvent( # create a new access event record to log this tap attempt
+        if student is None:
+            decision = "DENY"
+            reason = "NOT_REGISTERED"
+            student_id = None
+        else:
+            allowed, policy_reason = check_optional_policies(student) # run extra policy checks here 
+            if allowed:
+                decision = "GRANT"
+                reason = "OK"
+            else:
+                decision = "DENY"
+                reason = policy_reason
 
+            student_id = student.student_id
+
+    # use the provided timestamp if valid; else use current UTC time
+    if timestamp is not None:
+        try:
+            event_timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+        except ValueError:
+            event_timestamp = datetime.utcnow()
+    else:
+        event_timestamp = datetime.utcnow()
+
+    # log the tap attempt in the database
+    access_event = AccessEvent(
         student_id=student_id,
         timestamp=event_timestamp,
         decision=decision,
@@ -38,15 +68,16 @@ def process_access_event(card_uid: str, device_id: str = None, timestamp: str = 
         export_status="PENDING"
     )
 
-    db.session.add(access_event) # add & commit new event to database
+    db.session.add(access_event)
     db.session.commit()
 
-    response = { # response dictionary that will be returned to the Flask route
+    # build the response returned to the route
+    response = {
         "decision": decision,
         "reason": reason
     }
 
-    if student_id: # if a student ID exists, send back final dictionary with that student_id
+    if student_id is not None:
         response["student_id"] = student_id
 
-    return response 
+    return response
