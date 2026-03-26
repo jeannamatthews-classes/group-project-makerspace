@@ -2,6 +2,7 @@ from datetime import datetime
 from app.db import db
 from app.models import Student, AccessEvent
 from app.utils import hash_uid
+from services.audit_service import log_event
 
 
 def process_access_event(card_uid: str, device_id: str = None, timestamp: str = None) -> dict:
@@ -38,8 +39,7 @@ def process_access_event(card_uid: str, device_id: str = None, timestamp: str = 
         export_status="PENDING"
     )
 
-    db.session.add(access_event) # add & commit new event to database
-    db.session.commit()
+    log_event(access_event)
 
     response = { # response dictionary that will be returned to the Flask route
         "decision": decision,
