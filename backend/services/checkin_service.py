@@ -39,7 +39,7 @@ def process_access_event(card_uid: str, device_id: str = None, timestamp: str = 
         export_status="PENDING"
     )
 
-    log_event(access_event)
+    log_event(access_event) #logs the event in the sql database
 
     response = { # response dictionary that will be returned to the Flask route
         "decision": decision,
