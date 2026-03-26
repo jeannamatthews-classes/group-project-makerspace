@@ -1,0 +1,12 @@
+# Core Flask and database
+Flask==2.3.3
+Flask-SQLAlchemy==3.1.1
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
+Flask-Migrate==4.0.5
+
+# For the Sheets export worker and Google API interactions
+google-api-python-client==2.108.0
+google-auth-httplib2==0.1.1
+google-auth-oauthlib==1.1.0
+tenacity==8.2.3
