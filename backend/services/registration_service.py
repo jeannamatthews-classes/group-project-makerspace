@@ -25,6 +25,8 @@ def register_student(card_uid: str, student_id: str, name: str, email: str = Non
     db.session.add(student)
     db.session.commit()
 
+    #this service may also need an access_event creation in order to pass to the audit_service and log the event
+
     return {
         "status": "CREATED",
         "student_id": student_id
