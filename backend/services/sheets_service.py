@@ -1,6 +1,5 @@
 import os
 import logging
-from datetime import datetime
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 import gspread
@@ -9,23 +8,32 @@ from google.oauth2.service_account import Credentials
 from app.db import db
 from models.access_event import AccessEvent
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Configuration
-GOOGLE_CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json")
-SHEET_NAME = os.getenv("GOOGLE_SHEET_NAME", "RFID Logs")
+GOOGLE_CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE")
+if not GOOGLE_CREDENTIALS_FILE:
+    raise ValueError("GOOGLE_CREDENTIALS_FILE is not set")
+
+SHEET_NAME = os.getenv("GOOGLE_SHEET_NAME")
+if not SHEET_NAME:
+    raise ValueError("GOOGLE_SHEET_NAME is not set")
 
 # Google Sheets scope
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Authenticate
 def get_sheet():
-    creds = Credentials.from_service_account_file(
-        GOOGLE_CREDENTIALS_FILE, scopes=SCOPES
-    )
-    client = gspread.authorize(creds)
-    sheet = client.open(SHEET_NAME).sheet1
-    return sheet
+    try:
+        creds = Credentials.from_service_account_file(
+            GOOGLE_CREDENTIALS_FILE, scopes=SCOPES
+        )
+        client = gspread.authorize(creds)
+        sheet = client.open(SHEET_NAME).sheet1
+        return sheet
+    except Exception as e:
+        logger.error(f"Failed to connect to Google Sheets: {e}")
+        raise
 
 
 # Retry wrapper (handles network/API failures)
@@ -58,11 +66,12 @@ def export_pending_events():
         try:
             # Prepare row data
             row = [
-                event.student_id or "UNKNOWN",
-                event.timestamp.isoformat() if event.timestamp else "",
-                event.device_id or "",
+                event.id,              
+                event.student_id,
+                event.timestamp,
                 event.decision,
-                event.reason or ""
+                event.reason,
+                event.device_id
             ]
 
             # Append to Google Sheet (with retry)
@@ -70,12 +79,13 @@ def export_pending_events():
 
             # Mark as exported
             event.export_status = "EXPORTED"
+            db.session.commit()   # Commit immediately
 
             logging.info(f"Exported event ID {event.id}")
 
         except Exception as e:
             logging.error(f"Failed to export event ID {event.id}: {e}")
-            continue
+            db.session.rollback()
 
     # Commit all updates at once
     db.session.commit()
