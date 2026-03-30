@@ -1,0 +1,44 @@
+<!-- Makerspace registration form -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>MakerspaceRegistrationForm</title>
+    <!-- Import fonts here -->
+</head>
+
+<body>
+
+    <style>
+        /* Enter styles here */
+    </style>
+
+    <p>
+        Fill out all fields, then click submit and scan your card. If you
+        see a success message, you can scan again to sign in. Otherwise,
+        try registering again.
+    </p>
+
+    <!-- Form -->
+
+    <form action="/submit-registration-form" id="registration-form">
+
+        <input type="text" placeholder="Name" required>
+        <br>
+        <br>
+        <input type="text" placeholder="Email" required>
+        <br>
+        <br>
+        <input type="text" placeholder="Student ID" required>
+        <br>
+        <br>
+        <label for="training"><input id="training" type="checkbox" name="isTrained">I have been safety trained</label>
+        <br>
+        <br>
+        <!-- Add some legal jargon here "by submitting you agree..." - we can use the one in the makerspace form. -->
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+
+</html>
