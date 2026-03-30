@@ -1,1 +1,1 @@
-#the sheets exporter will also need to use access_events to pass an event to the audit_service to log
+#the sheets exporter will also need to use access_events to pass an event to log_event() from audit_service
