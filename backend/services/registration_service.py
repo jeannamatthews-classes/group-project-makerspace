@@ -25,7 +25,7 @@ def register_student(card_uid: str, student_id: str, name: str, email: str = Non
     db.session.add(student)
     db.session.commit()
 
-    #this service may also need an access_event creation in order to pass to the audit_service and log the event
+    #this service may also need to import audit_service and create an access_event to pass to log_event(). unsure if this is part of another person's issue.
 
     return {
         "status": "CREATED",
