@@ -9,4 +9,7 @@ def create_app():
 
     db.init_app(app)
 
+    from app.routes import routes
+    app.register_blueprint(routes)
+
     return app
