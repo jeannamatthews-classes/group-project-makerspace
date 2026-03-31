@@ -1,23 +1,31 @@
-from flask import request, jsonify
+from flask import Blueprint, request, jsonify
 from services.registration_service import register_student
-from app import app
+from services.checkin_service import process_access_event
 
+# Blueprint for grouping all API routes
+routes = Blueprint("routes", __name__)
 
-@app.route("/api/register", methods=["POST"])
+# Student Registration Route
+@routes.route("/api/register", methods=["POST"])
 def register():
+    # Parse JSON body from request
     data = request.get_json()
 
+    # Validate request format
     if not data:
         return jsonify({"error": "Request body must be JSON"}), 400
 
+    # Extract required and optional fields
     card_uid = data.get("card_uid")
     student_id = data.get("student_id")
     name = data.get("name")
     email = data.get("email")
 
+    # Validate required fields
     if not card_uid or not student_id or not name:
         return jsonify({"error": "card_uid, student_id, and name are required"}), 400
 
+    # Call service layer to handle registration logic
     result, status = register_student(
         card_uid=card_uid,
         student_id=student_id,
@@ -25,31 +33,34 @@ def register():
         email=email
     )
 
+    # Return response from service
     return jsonify(result), status
-from flask import Flask, request, jsonify
-from services.checkin_service import process_access_event
 
-app = Flask(__name__)
-
-@app.route("/api/access-events", methods=["POST"]) # post requests sent to /api/access-events
+# Create Access Event Route
+@routes.route("/api/access-events", methods=["POST"])
 def create_access_event():
-    data = request.get_json() # get the json body from the incoming request
-    if not data: # if no json body, error
+    # Parse JSON body from request
+    data = request.get_json()
+
+    # Validate request format
+    if not data:
         return jsonify({"error": "Request body must be JSON"}), 400
 
-    # extract fields 
+    # Extract fields from request
     card_uid = data.get("card_uid")
     device_id = data.get("device_id")
     timestamp = data.get("timestamp")
 
-    # card_uid is required
+    # card_uid is required for processing access event
     if not card_uid:
         return jsonify({"error": "card_uid is required"}), 400
 
+    # Call service layer to process access logic (GRANT / DENY + logging)
     result = process_access_event(
         card_uid=card_uid,
         device_id=device_id,
         timestamp=timestamp
     )
-    # return the result as a json response with 'OK' http status
+
+    # Return result (typically includes decision + message)
     return jsonify(result), 200
