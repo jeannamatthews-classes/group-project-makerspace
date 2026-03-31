@@ -7,13 +7,16 @@ def register_error_handlers(app):
     """
     Global error handlers.
 
-    Automatically logs ALL API errors.
+    Automatically logs API errors into audit_logs.
     """
 
     @app.errorhandler(HTTPException)
     def handle_http_exception(e):
         """
-        Handles known HTTP errors (400, 404, etc.)
+        Handles known HTTP errors such as:
+        - 400 Bad Request
+        - 404 Not Found
+        - 405 Method Not Allowed
         """
         try:
             log_event(
@@ -27,7 +30,8 @@ def register_error_handlers(app):
                 },
             )
         except Exception:
-            pass  # never break API because of logging
+            # Never let error logging break the API response
+            pass
 
         return jsonify({"error": e.description}), e.code
 

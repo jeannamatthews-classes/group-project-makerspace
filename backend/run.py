@@ -1,8 +1,6 @@
 from app import create_app
-from app.db import db
-from app.models import Student, AccessEvent, AuditLog
 
-# Create Flask app using app factory
+# Create Flask app using application factory
 app = create_app()
 
 
@@ -10,6 +8,8 @@ app = create_app()
 def home():
     """
     Simple health check route.
+
+    Useful for quickly checking whether the backend is up.
     """
     return {
         "status": "ok",
@@ -18,9 +18,13 @@ def home():
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        # Create database tables if they do not already exist
-        db.create_all()
-        print("Tables checked/created successfully.")
-
+    # IMPORTANT:
+    # We do NOT call db.create_all() here because the project already uses
+    # schema.sql as the source of truth for database structure.
+    #
+    # Tables should be created by running:
+    # psql -U postgres -d makerspace_db -f backend/database/schema.sql
+    #
+    # Keeping schema creation out of runtime avoids schema drift between
+    # SQLAlchemy models and the actual PostgreSQL schema.
     app.run(debug=True)

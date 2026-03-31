@@ -15,14 +15,14 @@ def create_app():
     """
     app = Flask(__name__)
 
-    # Database configuration (SQLite for now)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///makerspace_test.db"
+    # PostgreSQL configuration
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:makerspace2026@localhost:5432/makerspace_db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Initialize SQLAlchemy instance with app
     db.init_app(app)
 
-    # Register API routes (Blueprint)
+    # Register API routes
     from app.routes import routes
     app.register_blueprint(routes)
 

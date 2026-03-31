@@ -13,7 +13,12 @@ def log_event(
     """
     CENTRALIZED LOGGER
 
-    Used across the entire backend.
+    Used across the backend for:
+    - RFID taps
+    - registration events
+    - API errors
+    - export attempts
+    - other useful debug/system events
     """
 
     try:
@@ -30,5 +35,6 @@ def log_event(
         db.session.commit()
 
     except Exception as e:
+        # Never let logging crash the main application flow
         db.session.rollback()
         print(f"[Audit Log Error] {e}")
