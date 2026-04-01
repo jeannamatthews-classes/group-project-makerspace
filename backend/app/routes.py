@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from services.registration_service import register_student
 from services.checkin_service import process_access_event
+from apps.models import AccessEvent
 
 # Blueprint groups all API routes together
 routes = Blueprint("routes", __name__)
@@ -66,3 +68,53 @@ def create_access_event():
     )
 
     return jsonify(result), 200
+
+
+@routes.route("/api/admin/access-events", methods =["GET"])
+def get_event_logs():
+    query = AccessEvent.query
+    
+    student_id = request.args.get("student_id")
+    decision = request.args.get("decision")
+    from_timestamp = request.args.get("from")
+    to_timestamp = request.args.get("to")
+    
+    if student_id:
+        query = query.filter(AccessEvent.student_id == student_id)
+        
+    if decision:
+        query = query.filter(AccessEvent.decision == decision.upper())
+        
+    if from_timestamp:
+        try:
+            from_datetime = datetime.fromisoformat(from_timestamp.replace("Z","+00:00"))
+            query = query.filter(AccessEvent.timestamp >= from_datetime)
+        except ValueError:
+            return jsonify({"error": "Invaid format for 'from' timestamp."}), 400
+            
+    if to_timestamp:
+        try:
+            to_datetime = datetime.fromisoformat(to_timestamp.replace("Z","+00:00"))
+            query = query.filter(AccessEvent.timestamp <= to_datetime)
+        except ValueError:
+            return jsonify({"error": "Invalid format for 'to' timestamp"}), 400
+
+    events = query.order_by(AccessEvent.timestamp.desc()).all()
+
+    results = []
+    for event in events:
+        results.append({
+            "id": event.id,
+            "student_id": event.student_id,
+            "timestamp": event.timestamp.isoformat() if event.timestamp else None,
+            "decision": event.decision,
+            "reason": event.reason,
+            "device_id": event.device_id,
+            "export_status:" event.export_status
+        })
+
+    return jsonify(results), 200
+        
+    
+
+
