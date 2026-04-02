@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from datetime import datetime
 from services.registration_service import register_student
 from services.checkin_service import process_access_event
-from apps.models import AccessEvent
+from app.models import AccessEvent
 
 # Blueprint groups all API routes together
 routes = Blueprint("routes", __name__)
@@ -90,7 +90,7 @@ def get_event_logs():
             from_datetime = datetime.fromisoformat(from_timestamp.replace("Z","+00:00"))
             query = query.filter(AccessEvent.timestamp >= from_datetime)
         except ValueError:
-            return jsonify({"error": "Invaid format for 'from' timestamp."}), 400
+            return jsonify({"error": "Invalid format for 'from' timestamp."}), 400
             
     if to_timestamp:
         try:
@@ -110,7 +110,7 @@ def get_event_logs():
             "decision": event.decision,
             "reason": event.reason,
             "device_id": event.device_id,
-            "export_status:" event.export_status
+            "export_status": event.export_status
         })
 
     return jsonify(results), 200
