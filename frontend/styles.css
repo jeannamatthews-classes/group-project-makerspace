@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'montserrat';
+    src: url('Montserrat-VariableFont_wght.ttf') format('woff2'),
+        url('Montserrat-VariableFont_wght.ttf') format('woff');
+}
+
+:root {
+    --clarksonGreen: #004e42;
+    --clarksonGold: #ffcd00;
+}
+
+body {
+    font-family: 'montserrat';
+    padding: 0 10% 10% 10%
+}
+
+.myButton {
+    background-color: var(--clarksonGreen);
+    color: white;
+    padding: 10px 20px 10px 20px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 0;
+}
+
+.myButton:hover {
+    background-color: hsl(171, 100%, 22%);
+}
+
+.myButton:active {
+    background-color: hsl(171, 50%, 35%);
+}
+
+.errorText {
+    font-size: 70%;
+    color: red;
+    margin-top: 0;
+}

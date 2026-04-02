@@ -3,50 +3,49 @@
 <html lang="en">
 
 <head>
-    <title>MakerspaceRegistrationForm</title>
+    <title>Makerspace Registration Form</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <!-- import JS script -->
     <script defer src="script.js"></script>
-    <!-- Import fonts here -->
+
+    <!-- Import style sheet -->
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
 </head>
 
 <body>
-
-    <style>
-        /* Enter styles here */
-    </style>
+    <h1>Makerspace Sign-In Form</h1>
 
     <p>
-        Fill out all fields, then click submit and scan your card. If you
-        see a success message, you can scan again to sign in. Otherwise,
-        try registering again.
+        Fill out all fields, then click submit. If you see a success message, you can scan your card to sign in from
+        now
+        on. Otherwise, try registering again.
     </p>
 
     <!-- Form -->
-    <div id="error"></div>
-    <form id="registrationform" action="/submit-registration-form" id="registration-form">
+    <form id="registrationForm" action="/submit-registration-form">
 
         <label for="name">Name</label>
         <br>
         <input type="text" id="name" placeholder="Joe Bushy" required>
-
-        <br>
+        <p id="nameError" class="errorText"></p>
         <br>
 
         <label for="email">Email</label>
         <br>
         <input type="text" id="email" placeholder="example@clarkson.edu" required>
+        <p id="emailError" class="errorText"></p>
+        <br>
 
-        <br>
-        <br>
 
         <label for="studentid">Student ID</label>
         <br>
-        <input type="text" id="studentid" placeholder="Student ID" required>
+        <input type="number" id="studentid" placeholder="Student ID" required>
+        <p id="studentidError" class="errorText"></p>
+        <br>
 
-        <br>
-        <br>
 
         <b>
             By clicking "I agree", you state that you have watched the safety training slides and will adhere to all
@@ -57,8 +56,10 @@
             Agreement: I have read the Clarkson University Makerspace Safety and Operating Procedures Handbook and
             understand how they apply to my work and use of the Makerspace. Specifically:
             <br><br>
-            1. I agree to abide by the published and posted regulations and accept personal responsibility for my work
-            in the Makerspace. I understand that my failure to do so can result in injury and/or my loss of privileges
+            1. I agree to abide by the published and posted regulations and accept personal responsibility for my
+            work
+            in the Makerspace. I understand that my failure to do so can result in injury and/or my loss of
+            privileges
             in all Makerspaces.
             <br><br>
             2. I understand Clarkson University Makerspace access rules, supervision requirements, and hours.
@@ -71,24 +72,31 @@
             <br><br>
             5. I will not remove any tools or equipment from the Makerspace.
             <br><br>
-            6. I will obtain permission of the Makerspace Mentor prior to bringing in any tools or materials into the
+            6. I will obtain permission of the Makerspace Mentor prior to bringing in any tools or materials into
+            the
             Makerspace.
             <br><br>
             7. After use, I will clean and maintain all equipment, floors, and areas I use.
             <br><br>
-            8. I will not attempt to use any machine, tool, or equipment that I do not have authorization to use. I will
-            ask for instruction and/or training before using any machine, tool, or equipment with which I have not been
+            8. I will not attempt to use any machine, tool, or equipment that I do not have authorization to use. I
+            will
+            ask for instruction and/or training before using any machine, tool, or equipment with which I have not
+            been
             trained on. I understand that if I need help, I will ask the Makerspace Mentor on duty.
             <br><br>
-            9. I will check in with the Mentor upon entering or leaving the Makerspace and prior to operating any tools
+            9. I will check in with the Mentor upon entering or leaving the Makerspace and prior to operating any
+            tools
             or equipment.
             <br><br>
-            10. For any equipment or tools I find needing repair or that I damage, I will promptly notify the Mentor on
+            10. For any equipment or tools I find needing repair or that I damage, I will promptly notify the Mentor
+            on
             duty.
             <br><br>
             11. I will not design, make, print, or request printed any guns, knives, swords, or any parts or illegal
-            items in the Makerspace. I understand that any work or request to print any of these materials will result
-            in reporting it to Campus Security and the Dean of Students for further investigation and corrective action.
+            items in the Makerspace. I understand that any work or request to print any of these materials will
+            result
+            in reporting it to Campus Security and the Dean of Students for further investigation and corrective
+            action.
             This may also result in being banned from the Makerspace.
             <br><br>
             Certification: I understand that it is a privilege and learning opportunity to use Clarkson University’s
@@ -102,14 +110,10 @@
         <br>
 
         <!-- Add some legal jargon here "by submitting you agree..." - we can use the one in the makerspace form. -->
-        <button type="submit">Submit</button>
+        <button type="submit" class="myButton">Submit</button>
     </form>
 
     <br>
-
-
-    <p id="message"></p>
-
 </body>
 
 </html>
