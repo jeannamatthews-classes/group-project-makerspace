@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from datetime import datetime, timezone
 
 from flask import Blueprint, jsonify, request
@@ -6,16 +7,46 @@ from app.models import AccessEvent
 from app.utils import normalize_uid, parse_iso_timestamp
 from services.checkin_service import process_access_event
 from services.registration_service import register_student
+=======
+from flask import Blueprint, request, jsonify
+from datetime import datetime
+from services.registration_service import register_student
+from services.checkin_service import process_access_event
+from app.models import AccessEvent
+>>>>>>> 2be73f6af9b7843775f301664e7cc2b2203c397d
 
 routes = Blueprint("routes", __name__)
 
 
 @routes.post("/api/register")
 def register():
+<<<<<<< HEAD
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Request body must be JSON"}), 400
 
+=======
+    """
+    Register a new student.
+    """
+    data = request.get_json()
+
+    # Request body must be JSON
+    if not data:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    # Extract fields from request body
+    card_uid = data.get("card_uid")
+    student_id = data.get("student_id")
+    name = data.get("name")
+    email = data.get("email")
+
+    # Validate required fields
+    if not card_uid or not student_id or not name:
+        return jsonify({"error": "card_uid, student_id, and name are required"}), 400
+
+    # Delegate business logic to registration service
+>>>>>>> 2be73f6af9b7843775f301664e7cc2b2203c397d
     result, status = register_student(
         card_uid=data.get("card_uid"),
         student_id=data.get("student_id"),
@@ -27,14 +58,33 @@ def register():
 
 @routes.post("/api/access-events")
 def create_access_event():
+<<<<<<< HEAD
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Request body must be JSON"}), 400
 
     card_uid = normalize_uid(data.get("card_uid"))
+=======
+    """
+    Process an RFID tap event and return the access decision.
+    """
+    data = request.get_json()
+
+    # Request body must be JSON
+    if not data:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    # Extract fields from request body
+    card_uid = data.get("card_uid")
+    device_id = data.get("device_id")
+    timestamp = data.get("timestamp")
+
+    # card_uid is required to process an access event
+>>>>>>> 2be73f6af9b7843775f301664e7cc2b2203c397d
     if not card_uid:
         return jsonify({"error": "card_uid is required"}), 400
 
+    # Delegate business logic to check-in service
     result, status = process_access_event(
         card_uid=card_uid,
         device_id=data.get("device_id"),
