@@ -1,49 +1,44 @@
 from flask import jsonify, request
 from werkzeug.exceptions import HTTPException
+
 from services.audit_service import log_event
 
 
+SENSITIVE_ERROR_TYPES = {"password", "token", "secret"}
+
+
 def register_error_handlers(app):
-    """
-    Global error handlers.
-
-    Automatically logs API errors into audit_logs.
-    """
-
     @app.errorhandler(HTTPException)
-    def handle_http_exception(e):
-        """
-        Handles known HTTP errors such as:
-        - 400 Bad Request
-        - 404 Not Found
-        - 405 Method Not Allowed
-        """
+    def handle_http_exception(error):
         try:
             log_event(
                 event_type="API_ERROR",
-                message=e.description,
+                message=error.description,
                 status="ERROR",
                 metadata={
                     "endpoint": request.path,
                     "method": request.method,
-                    "code": e.code,
+                    "code": error.code,
                 },
             )
         except Exception:
-            # Never let error logging break the API response
             pass
 
-        return jsonify({"error": e.description}), e.code
+        return jsonify({"error": error.description}), error.code
 
     @app.errorhandler(Exception)
-    def handle_unexpected_exception(e):
-        """
-        Handles unexpected server errors (500).
-        """
+    def handle_unexpected_exception(error):
         try:
+            error_text = str(error)
+            lowered = error_text.lower()
+            if any(word in lowered for word in SENSITIVE_ERROR_TYPES):
+                safe_message = "Unexpected internal error"
+            else:
+                safe_message = error_text[:500]
+
             log_event(
                 event_type="API_ERROR",
-                message=str(e),
+                message=safe_message,
                 status="ERROR",
                 metadata={
                     "endpoint": request.path,

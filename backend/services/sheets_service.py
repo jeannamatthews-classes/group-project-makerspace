@@ -7,12 +7,6 @@ def log_export_attempt(
     success: bool = True,
     details: str = None,
 ):
-    """
-    Centralized helper for logging Google Sheets export attempts.
-
-    Call this from the actual Google Sheets export workflow after an export
-    succeeds or fails.
-    """
     log_event(
         event_type="EXPORT_ATTEMPT",
         message=details or "Google Sheets export attempt recorded",

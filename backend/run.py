@@ -1,30 +1,20 @@
+import os
+
 from app import create_app
 
-# Create Flask app using application factory
 app = create_app()
 
 
-@app.route("/")
+@app.get("/")
 def home():
-    """
-    Simple health check route.
-
-    Useful for quickly checking whether the backend is up.
-    """
     return {
         "status": "ok",
-        "message": "Makerspace backend is running"
-    }
+        "message": "Makerspace backend is running",
+    }, 200
 
 
 if __name__ == "__main__":
-    # IMPORTANT:
-    # We do NOT call db.create_all() here because the project already uses
-    # schema.sql as the source of truth for database structure.
-    #
-    # Tables should be created by running:
-    # psql -U postgres -d makerspace_db -f backend/database/schema.sql
-    #
-    # Keeping schema creation out of runtime avoids schema drift between
-    # SQLAlchemy models and the actual PostgreSQL schema.
-    app.run(debug=True)
+    host = os.getenv("FLASK_HOST", "127.0.0.1")
+    port = int(os.getenv("FLASK_PORT", "5000"))
+    debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    app.run(host=host, port=port, debug=debug)
