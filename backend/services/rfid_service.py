@@ -58,6 +58,7 @@ def send_to_backend(uid):
         print("Connection Failed:", e)
 
 # Offline Queue 
+<<<<<<< HEAD
 QUEUE_FILE = os.getenv("RFID_QUEUE_FILE", "rfid_queue.json") # use env var if set, otherwise fall back to local default file
 RETRY_SECONDS = 10
 queue_lock = threading.Lock()  # prevents two threads from reading/writing the queue file at the same time
@@ -108,6 +109,35 @@ def try_send_payload(payload):
         # this function returns False and the payload may be queued again.
         # If deduplication is needed later, it will likely need to be handled
         # in the backend or by adding a unique client-generated event ID.
+=======
+QUEUE_FILE = "rfid_queue.json" # file used to temporarily store RFID events if the backend is unavailable
+RETRY_SECONDS = 10
+
+
+def load_queue():
+    if not os.path.exists(QUEUE_FILE): # if the file does not exist yet, just start with an empty queue
+        return []
+    try:
+        with open(QUEUE_FILE, "r") as f:
+            return json.load(f)
+    except Exception:
+        return []  # if something is wrong with the file, do not crash the scanner
+
+def save_queue(queue):
+    with open(QUEUE_FILE, "w") as f: # save the current queue back into the local JSON file
+        json.dump(queue, f)
+
+
+def add_event_to_queue(payload):
+    queue = load_queue() # add the new failed event to the end of the queue
+    queue.append(payload) # add the new failed event to the end of the queue   
+    save_queue(queue)
+    print("Event saved locally for retry.")
+
+# tries to send one RFID event to the backend
+def try_send_payload(payload):
+    try:
+>>>>>>> origin/main
         response = requests.post(API_URL, json=payload, timeout=5)
 
         try:  # try converting the server response into JSON
@@ -161,9 +191,12 @@ def retry_queued_events():
 
 
 # Redefined send_to_backend so I won't have to change the main loop
+<<<<<<< HEAD
 # NOTE: deduplication is not handled in this file yet.
 # If the same event gets retried, duplicate prevention will likely need to be
 # added in the backend access-events flow or by attaching a unique event ID later.
+=======
+>>>>>>> origin/main
 def send_to_backend(uid):
     payload = {
         "card_uid": uid,
@@ -177,9 +210,12 @@ def send_to_backend(uid):
     # Then try the current scan
     success = try_send_payload(payload)
 
+<<<<<<< HEAD
     # NOTE: this may re-queue an event that was already processed by the backend
     # if the request succeeded but the client failed while handling the response.
     # Deduplication is not handled in this file yet.
+=======
+>>>>>>> origin/main
     if not success:
         add_event_to_queue(payload)
 
@@ -194,6 +230,10 @@ retry_thread = threading.Thread(target=background_retry, daemon=True)
 retry_thread.start()
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 # Main loop to read RFID input
 for event in device.read_loop():
     if event.type == ecodes.EV_KEY:
