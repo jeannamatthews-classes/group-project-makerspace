@@ -1,0 +1,154 @@
+@font-face {
+    font-family: "montserrat";
+    src: url("Montserrat-VariableFont_wght.ttf") format("truetype");
+}
+
+:root {
+    --clarksonGreen: #004e42;
+    --clarksonGold: #ffcd00;
+    --successBg: #e9f8ef;
+    --successBorder: #2e7d32;
+    --errorBg: #fdecea;
+    --errorBorder: #c62828;
+    --infoBg: #eef5ff;
+    --infoBorder: #1565c0;
+}
+
+body {
+    font-family: "montserrat", Arial, sans-serif;
+    margin: 0;
+    background-color: #f8f8f8;
+    color: #1f1f1f;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 60px 20px;
+}
+
+h1 {
+    color: var(--clarksonGreen);
+    margin-bottom: 10px;
+}
+
+h2,
+h3 {
+    color: var(--clarksonGreen);
+}
+
+.intro {
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+.status-panel,
+.scan-hint,
+.registration-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.status-panel {
+    border-left: 6px solid var(--infoBorder);
+}
+
+.status-info {
+    background-color: var(--infoBg);
+    border-left-color: var(--infoBorder);
+}
+
+.status-success {
+    background-color: var(--successBg);
+    border-left-color: var(--successBorder);
+}
+
+.status-error {
+    background-color: var(--errorBg);
+    border-left-color: var(--errorBorder);
+}
+
+.hidden {
+    display: none;
+}
+
+.registration-note {
+    margin-top: 0;
+    font-weight: 600;
+}
+
+.card-info {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+input[type="text"],
+input[type="email"] {
+    padding: 12px;
+    border: 1px solid #bdbdbd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.agreement-box {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid #d0d0d0;
+    border-radius: 10px;
+    background-color: #fafafa;
+    line-height: 1.5;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+.myButton {
+    background-color: var(--clarksonGreen);
+    color: white;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+.myButton:hover {
+    background-color: hsl(171, 100%, 22%);
+}
+
+.myButton:active {
+    background-color: hsl(171, 50%, 35%);
+}
+
+.myButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.errorText {
+    font-size: 0.85rem;
+    color: red;
+    margin-top: 0;
+    margin-bottom: 0;
+    min-height: 18px;
+}
