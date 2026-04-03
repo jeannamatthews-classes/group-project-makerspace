@@ -4,17 +4,17 @@ CREATE TABLE students (
     name TEXT NOT NULL,
     email TEXT UNIQUE,
     card_uid_hash TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE access_events (
     id SERIAL PRIMARY KEY,
     student_id VARCHAR(20) REFERENCES students(student_id) NULL,
-    timestamp TIMESTAMP NOT NULL,
-    decision VARCHAR(10) NOT NULL CHECK (decision = 'GRANTED' OR decision = 'DENIED'),
+    timestamp TIMESTAMPTZ NOT NULL,
+    decision VARCHAR(10) NOT NULL CHECK (decision IN ('GRANTED', 'DENIED')),
     reason TEXT,
     device_id TEXT,
-    export_status VARCHAR(10) DEFAULT 'PENDING'
+    export_status VARCHAR(10) NOT NULL DEFAULT 'PENDING' CHECK (export_status IN ('PENDING', 'EXPORTED', 'FAILED'))
 );
 
 CREATE INDEX student_id_index ON access_events (student_id);
@@ -28,7 +28,7 @@ CREATE TABLE audit_logs (
     student_id VARCHAR(20),
     device_id TEXT,
     metadata_json JSON,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX audit_event_type_index ON audit_logs (event_type);
