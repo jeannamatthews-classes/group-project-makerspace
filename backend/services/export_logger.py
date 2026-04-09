@@ -7,6 +7,9 @@ def log_export_attempt(
     success: bool = True,
     details: str = None,
 ):
+    """
+    Log Google Sheets export attempts through the central audit logger.
+    """
     log_event(
         event_type="EXPORT_ATTEMPT",
         message=details or "Google Sheets export attempt recorded",
