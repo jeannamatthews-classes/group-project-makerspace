@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Makerspace Sign-In</title>
     <meta charset="UTF-8">
@@ -8,6 +9,7 @@
     <script defer src="script.js"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
+
 <body>
     <main class="container">
         <h1>Makerspace Sign-In</h1>
@@ -40,23 +42,17 @@
             </p>
 
             <form id="registrationForm">
-                <label for="name">Name</label>
+                <label for="name">Full Name</label>
                 <input type="text" id="name" placeholder="Joe Bushy" required>
                 <p id="nameError" class="errorText"></p>
 
-                <label for="email">Email</label>
+                <label for="email">Clarkson Email</label>
                 <input type="email" id="email" placeholder="example@clarkson.edu" required>
                 <p id="emailError" class="errorText"></p>
 
                 <label for="studentid">Student ID</label>
-                <input
-                    type="text"
-                    id="studentid"
-                    placeholder="7-digit Student ID"
-                    inputmode="numeric"
-                    maxlength="7"
-                    required
-                >
+                <input type="text" id="studentid" placeholder="7-digit Student ID" inputmode="numeric" maxlength="7"
+                    required>
                 <p id="studentidError" class="errorText"></p>
 
                 <div class="agreement-box">
@@ -74,7 +70,8 @@
                         for my work in the Makerspace. I understand that my failure to do so can result in injury
                         and/or my loss of privileges in all Makerspaces.
                         <br><br>
-                        2. I understand Clarkson University Makerspace access rules, supervision requirements, and hours.
+                        2. I understand Clarkson University Makerspace access rules, supervision requirements, and
+                        hours.
                         <br><br>
                         3. I will wear required personal protective equipment at all times while in the Makerspace.
                         I understand that attire is required to work in the Makerspace and will not enter the
@@ -121,4 +118,5 @@
         </section>
     </main>
 </body>
+
 </html>

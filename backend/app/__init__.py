@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 
 from app.db import db
 from config.config import config_by_name
@@ -8,6 +9,8 @@ from config.config import config_by_name
 
 def create_app():
     app = Flask(__name__)
+
+    CORS(app, supports_credentials=True)
 
     env_name = os.getenv("FLASK_ENV", "development").lower()
     config_class = config_by_name.get(env_name, config_by_name["development"])

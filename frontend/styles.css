@@ -27,6 +27,10 @@ body {
     padding: 32px 20px 60px 20px;
 }
 
+html {
+    scroll-padding-top: 20px;
+}
+
 h1 {
     color: var(--clarksonGreen);
     margin-bottom: 10px;

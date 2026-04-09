@@ -38,7 +38,12 @@ def register():
 @routes.post("/api/access-events")
 def create_access_event():
     """
-    Process an RFID tap event and return the access decision.
+    Process an RFID tap event and return a structured access decision.
+
+    The response now includes:
+    - decision: GRANTED or DENIED
+    - code: machine-readable code such as NOT_REGISTERED
+    - reason: human-readable message for the frontend
     """
     data = request.get_json(silent=True)
     if not data:
@@ -58,6 +63,9 @@ def create_access_event():
 
 @routes.get("/api/admin/access-events")
 def get_access_events():
+    """
+    Retrieve access event records with optional filters and pagination.
+    """
     query = AccessEvent.query
 
     student_id = request.args.get("student_id", type=str)

@@ -7,7 +7,11 @@ instance/
 
 # Environment
 .env
+venv/
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Google service account key
+backend/service-account.json
